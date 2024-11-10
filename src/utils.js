@@ -10,15 +10,27 @@ export async function saveQuestion(question) {
     },
   });
   const response = questionResponse.json();
-  console.log("response:", response);
   return response;
 }
 
 // Utility function to get all questions
-export async function getQuestions() {
-  const questionResponse = await fetch(`${BASE_URL}/questions`, {
-    method: "GET",
-  });
+export async function getQuestions({ limit, page, filter, fields }) {
+  // const {limit, filter, page, fields} = params
+  // const filter = params.filter
+  // const page = params.page
+  // const fields = params.fields
+
+  const questionResponse = await fetch(
+    `${BASE_URL}/questions?${new URLSearchParams({
+      limit,
+      page,
+      filter: JSON.stringify(filter ?? {}),
+      fields: JSON.stringify(fields ?? {}),
+    })}`,
+    {
+      method: "GET",
+    }
+  );
 
   const response = await questionResponse.json();
   return response;
@@ -48,5 +60,17 @@ export async function updateQuestion(questionId, updatedData) {
   });
 
   const response = await questionResponse.json();
+  return response;
+}
+
+// Utility function to delete questions
+export async function deleteQuestion(questionId) {
+  const deleteQuestionResponse = await fetch(
+    `${BASE_URL}/questions/${questionId}`,
+    {
+      method: "DELETE",
+    }
+  );
+  const response = deleteQuestionResponse.json();
   return response;
 }

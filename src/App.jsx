@@ -1,12 +1,27 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import AddQuestions from "./components/addQuestions";
-import AllQuestions from "./components/allQuestions";
+import AddQuestions from "./dashboard/pages/addQuestions";
+import AllQuestions from "./dashboard/pages/allQuestions";
+import Layout from "./dashboard/layout/layout";
 
 const App = () => {
   const router = createBrowserRouter([
-    { path: "/", element: <AddQuestions /> },
-    { path: "/questions", element: <AllQuestions /> },
+    {
+      path: "dashboard",
+      element: <Layout/>,
+      children: [
+        {
+          index: true,
+          element: <AllQuestions/>
+        },
+        {
+          path: "addquestions",
+          element: <AddQuestions/>
+        }
+      ]
+    }
+    // { path: "/", element: <AddQuestions /> },
+    // { path: "/questions", element: <AllQuestions /> },
   ]);
   return <RouterProvider router={router} />;
 };

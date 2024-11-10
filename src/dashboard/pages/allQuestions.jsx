@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { filterQuestions, getQuestions, updateQuestion } from "../utils";
+import ReactPaginate from 'react-paginate';
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import { deleteQuestion, filterQuestions, getQuestions, updateQuestion } from "../../utils";
 import { FaRegEdit } from "react-icons/fa";
 import { MdOutlineDelete } from "react-icons/md";
 import { useParams } from "react-router-dom";
@@ -10,12 +13,13 @@ const AllQuestions = () => {
   const questionId = urlParams.questionId;
   const updateQuestion = Boolean(questionId);
 
-  const [questionList, setQuestionList] = useState([]);
+  const [questions, setQuestions] = useState();
   const [input, setInput] = useState("");
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState([]);
   const [answer, setAnswer] = useState();
   const [category, setCategory] = useState("");
+  
 
   const handleSearch = async (value) => {
     const filteredQuestions = await filterQuestions(value);
@@ -35,21 +39,29 @@ const AllQuestions = () => {
       const updatedQuestion = await updateQuestion(questionId, questionData);
 
       // Fetch questions from the database to synchronize the front and backend
-      const questions = await getQuestions();
-      setQuestionList(questions);
+      const questions = await getQuestions({});
+      setQuestion(questions);
     }
   };
 
   useEffect(() => {
     const fetchQuestions = async () => {
-      const questionList = await getQuestions();
-      setQuestionList(questionList);
+      const questionRes = await getQuestions({});
+      console.log("questionRes:", questionRes)
+      setQuestions(questionRes);
     };
     fetchQuestions();
   }, []);
 
   return (
-    <div className="px-10">
+    <div className="px-10 w-screen p-5">
+      {/* <h1 className="bg-[#E62E2D] text-center p-5 text-[40px] text-white h-auto font-semibold w-[100%]">
+        Questions
+      </h1> */}
+      <div className="flex text-white justify-around p-10">
+        <span className="bg-[#E62E2D] py-2 px-5 rounded-lg font-semibold">20 Questions</span>
+        <span className="bg-[#E62E2D] py-2 px-5 rounded-lg font-semibold">3 Categories</span>
+      </div>
       <div className="flex justify-end p-5">
         <input
           type="text"
@@ -86,7 +98,7 @@ const AllQuestions = () => {
           </tr>
         </thead>
         <tbody>
-          {questionList.map((question, index) => {
+          {questions?.docs?.map((question, index) => {
             return (
               <tr key={index} className="even:bg-[#eeeeee]">
                 <td className="p-2">{question.question}</td>
@@ -109,7 +121,19 @@ const AllQuestions = () => {
                     <MdOutlineDelete
                       className="hover: cursor-pointer"
                       size={22}
+                      onClick={async (e) => {
+                        try {
+                          const listQuestion = await deleteQuestion(question.id)
+                          // Fetch the list and set it to the new state
+                          const questions = await getQuestions({});
+                          toast.success("Question deleted successfully")
+                          setQuestions(questions)
+                        } catch (error) {
+                          console.log("error:", error)
+                        }
+                      }}
                     />
+                    <ToastContainer/>
                   </div>
                 </td>
               </tr>
