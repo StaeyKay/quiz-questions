@@ -22,8 +22,8 @@ export async function getQuestions({ limit, page, filter, fields }) {
 
   const questionResponse = await fetch(
     `${BASE_URL}/questions?${new URLSearchParams({
-      limit,
-      page,
+      limit: limit ?? 10,
+      page: page ?? 1,
       filter: JSON.stringify(filter ?? {}),
       fields: JSON.stringify(fields ?? {}),
     })}`,

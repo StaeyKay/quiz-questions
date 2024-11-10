@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import { saveQuestion } from "../../utils";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
-const AddQuestions = () => {
+const UpdateQuestion = () => {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState([]);
   const [answer, setAnswer] = useState();
   const [category, setCategory] = useState("");
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -105,4 +106,4 @@ const AddQuestions = () => {
   );
 };
 
-export default AddQuestions;
+export default UpdateQuestion;

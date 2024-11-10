@@ -5,10 +5,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import { deleteQuestion, filterQuestions, getQuestions, updateQuestion } from "../../utils";
 import { FaRegEdit } from "react-icons/fa";
 import { MdOutlineDelete } from "react-icons/md";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const AllQuestions = () => {
   const urlParams = useParams();
+  const navigate = useNavigate();
 
   const questionId = urlParams.questionId;
   const updateQuestion = Boolean(questionId);
@@ -33,6 +34,9 @@ const AllQuestions = () => {
       answer: answer,
       category: category,
     };
+    navigate("/updatequestions", {state:questionData})
+    
+    console.log("questionData:", questionData)
 
     if (updateQuestion) {
       // Call update questions function
@@ -123,17 +127,16 @@ const AllQuestions = () => {
                       size={22}
                       onClick={async (e) => {
                         try {
-                          const listQuestion = await deleteQuestion(question.id)
+                          await deleteQuestion(question.id)
                           // Fetch the list and set it to the new state
                           const questions = await getQuestions({});
-                          toast.success("Question deleted successfully")
                           setQuestions(questions)
+                          toast.success("Question deleted successfully")
                         } catch (error) {
                           console.log("error:", error)
                         }
                       }}
                     />
-                    <ToastContainer/>
                   </div>
                 </td>
               </tr>

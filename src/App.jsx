@@ -3,6 +3,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AddQuestions from "./dashboard/pages/addQuestions";
 import AllQuestions from "./dashboard/pages/allQuestions";
 import Layout from "./dashboard/layout/layout";
+import { ToastContainer } from "react-toastify";
+import UpdateQuestion from "./dashboard/pages/updateQuestion";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -17,13 +19,19 @@ const App = () => {
         {
           path: "addquestions",
           element: <AddQuestions/>
+        },
+        {
+          path: "updatequestions",
+          element: <UpdateQuestion/>
         }
       ]
     }
-    // { path: "/", element: <AddQuestions /> },
-    // { path: "/questions", element: <AllQuestions /> },
+    
   ]);
-  return <RouterProvider router={router} />;
+  return <>
+  <RouterProvider router={router} />
+  <ToastContainer/>
+  </> 
 };
 
 export default App;
