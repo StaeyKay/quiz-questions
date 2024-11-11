@@ -1,12 +1,12 @@
 const K = {
   DASHBOARDLINKS: [
-    { 
-        name: "ALL QUESTIONS", 
-        path: "/dashboard" 
+    {
+      name: "ALL QUESTIONS",
+      path: "/",
     },
-    { 
-        name: "ADD QUESTIONS", 
-        path: "addquestions" 
+    {
+      name: "ADD QUESTIONS",
+      path: "addquestions",
     },
   ],
 };

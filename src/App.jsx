@@ -9,29 +9,30 @@ import UpdateQuestion from "./dashboard/pages/updateQuestion";
 const App = () => {
   const router = createBrowserRouter([
     {
-      path: "dashboard",
-      element: <Layout/>,
+      path: "/",
+      element: <Layout />,
       children: [
         {
           index: true,
-          element: <AllQuestions/>
+          element: <AllQuestions />,
         },
         {
           path: "addquestions",
-          element: <AddQuestions/>
+          element: <AddQuestions />,
         },
         {
           path: "updatequestions",
-          element: <UpdateQuestion/>
-        }
-      ]
-    }
-    
+          element: <UpdateQuestion />,
+        },
+      ],
+    },
   ]);
-  return <>
-  <RouterProvider router={router} />
-  <ToastContainer/>
-  </> 
+  return (
+    <>
+      <RouterProvider router={router} />
+      <ToastContainer />
+    </>
+  );
 };
 
 export default App;

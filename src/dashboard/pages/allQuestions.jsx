@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
-import ReactPaginate from 'react-paginate';
+import ReactPaginate from "react-paginate";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-import { deleteQuestion, filterQuestions, getQuestions, updateQuestion } from "../../utils";
+import "react-toastify/dist/ReactToastify.css";
+import {
+  deleteQuestion,
+  filterQuestions,
+  getQuestions,
+  updateQuestion,
+} from "../../utils";
 import { FaRegEdit } from "react-icons/fa";
 import { MdOutlineDelete } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
@@ -16,15 +21,18 @@ const AllQuestions = () => {
 
   const [questions, setQuestions] = useState();
   const [input, setInput] = useState("");
-  const [question, setQuestion] = useState("");
+  // const [question, setQuestion] = useState("");
   const [options, setOptions] = useState([]);
   const [answer, setAnswer] = useState();
   const [category, setCategory] = useState("");
-  
+
+  console.log("totalpage:", questions?.totalPages);
 
   const handleSearch = async (value) => {
-    const filteredQuestions = await filterQuestions(value);
-    setQuestionList(filteredQuestions);
+    const filteredQuestions = await getQuestions({
+      filter: { category: value },
+    });
+    setQuestions(filteredQuestions);
   };
 
   const handleUpdate = async () => {
@@ -34,9 +42,7 @@ const AllQuestions = () => {
       answer: answer,
       category: category,
     };
-    navigate("/updatequestions", {state:questionData})
-    
-    console.log("questionData:", questionData)
+    navigate("/updatequestions", { state: questionData });
 
     if (updateQuestion) {
       // Call update questions function
@@ -48,10 +54,17 @@ const AllQuestions = () => {
     }
   };
 
+  const onPageChange = async ({ selected }) => {
+    const questions = await getQuestions({
+      page: selected + 1,
+      filter: input ? { category: input } : null,
+    });
+    setQuestions(questions);
+  };
+
   useEffect(() => {
     const fetchQuestions = async () => {
       const questionRes = await getQuestions({});
-      console.log("questionRes:", questionRes)
       setQuestions(questionRes);
     };
     fetchQuestions();
@@ -63,8 +76,12 @@ const AllQuestions = () => {
         Questions
       </h1> */}
       <div className="flex text-white justify-around p-10">
-        <span className="bg-[#E62E2D] py-2 px-5 rounded-lg font-semibold">20 Questions</span>
-        <span className="bg-[#E62E2D] py-2 px-5 rounded-lg font-semibold">3 Categories</span>
+        <span className="bg-[#E62E2D] py-2 px-5 rounded-lg font-semibold">
+          20 Questions
+        </span>
+        <span className="bg-[#E62E2D] py-2 px-5 rounded-lg font-semibold">
+          3 Categories
+        </span>
       </div>
       <div className="flex justify-end p-5">
         <input
@@ -127,13 +144,13 @@ const AllQuestions = () => {
                       size={22}
                       onClick={async (e) => {
                         try {
-                          await deleteQuestion(question.id)
+                          await deleteQuestion(question.id);
                           // Fetch the list and set it to the new state
                           const questions = await getQuestions({});
-                          setQuestions(questions)
-                          toast.success("Question deleted successfully")
+                          setQuestions(questions);
+                          toast.success("Question deleted successfully");
                         } catch (error) {
-                          console.log("error:", error)
+                          console.log("error:", error);
                         }
                       }}
                     />
@@ -144,6 +161,36 @@ const AllQuestions = () => {
           })}
         </tbody>
       </table>
+      <div>
+        <ReactPaginate
+          previousLabel={"Previous"}
+          nextLabel={"Next"}
+          breakLabel={"..."}
+          breakClassName={"break-me"}
+          pageCount={questions?.totalPages}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={onPageChange}
+          containerClassName={"flex justify-center mt-4"}
+          pageClassName={"mx-1"}
+          pageLinkClassName={
+            "px-3 py-1 border border-gray-300 rounded hover:bg-gray-200"
+          }
+          previousClassName={"mx-1"}
+          previousLinkClassName={
+            "px-3 py-1 border border-gray-300 rounded text-blue-500 hover:bg-gray-200"
+          }
+          nextClassName={"mx-1"}
+          nextLinkClassName={
+            "px-3 py-1 border border-gray-300 rounded text-blue-500 hover:bg-gray-200"
+          }
+          breakLinkClassName={
+            "px-3 py-1 border border-gray-300 rounded text-blue-500 hover:bg-gray-200"
+          }
+          activeClassName={"bg-blue-500 text-white"}
+          activeLinkClassName={"text-white"}
+        />
+      </div>
     </div>
   );
 };
