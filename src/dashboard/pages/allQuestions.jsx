@@ -21,12 +21,10 @@ const AllQuestions = () => {
 
   const [questions, setQuestions] = useState();
   const [input, setInput] = useState("");
-  // const [question, setQuestion] = useState("");
+  const [question, setQuestion] = useState("");
   const [options, setOptions] = useState([]);
   const [answer, setAnswer] = useState();
   const [category, setCategory] = useState("");
-
-  console.log("totalpage:", questions?.totalPages);
 
   const handleSearch = async (value) => {
     const filteredQuestions = await getQuestions({
@@ -35,23 +33,8 @@ const AllQuestions = () => {
     setQuestions(filteredQuestions);
   };
 
-  const handleUpdate = async () => {
-    const questionData = {
-      question: question,
-      options: options,
-      answer: answer,
-      category: category,
-    };
-    navigate("/updatequestions", { state: questionData });
-
-    if (updateQuestion) {
-      // Call update questions function
-      const updatedQuestion = await updateQuestion(questionId, questionData);
-
-      // Fetch questions from the database to synchronize the front and backend
-      const questions = await getQuestions({});
-      setQuestion(questions);
-    }
+  const handleUpdate = async (question) => {
+    navigate("updatequestions", { state: question });
   };
 
   const onPageChange = async ({ selected }) => {
@@ -77,7 +60,7 @@ const AllQuestions = () => {
       </h1> */}
       <div className="flex text-white justify-around p-10">
         <span className="bg-[#E62E2D] py-2 px-5 rounded-lg font-semibold">
-          20 Questions
+          {questions?.totalDocs} Questions
         </span>
         <span className="bg-[#E62E2D] py-2 px-5 rounded-lg font-semibold">
           3 Categories
@@ -135,7 +118,7 @@ const AllQuestions = () => {
                 <td className="p-2">
                   <div className="flex justify-center">
                     <FaRegEdit
-                      onClick={() => handleUpdate}
+                      onClick={() => handleUpdate(question)}
                       className="hover: cursor-pointer"
                       size={20}
                     />
@@ -169,7 +152,7 @@ const AllQuestions = () => {
           breakClassName={"break-me"}
           pageCount={questions?.totalPages}
           marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
+          pageRangeDisplayed={1}
           onPageChange={onPageChange}
           containerClassName={"flex justify-center mt-4"}
           pageClassName={"mx-1"}
@@ -178,16 +161,16 @@ const AllQuestions = () => {
           }
           previousClassName={"mx-1"}
           previousLinkClassName={
-            "px-3 py-1 border border-gray-300 rounded text-blue-500 hover:bg-gray-200"
+            "px-3 py-1 border border-gray-300 rounded text-black hover:bg-gray-200"
           }
           nextClassName={"mx-1"}
           nextLinkClassName={
-            "px-3 py-1 border border-gray-300 rounded text-blue-500 hover:bg-gray-200"
+            "px-3 py-1 border border-gray-300 rounded text-black hover:bg-gray-200"
           }
           breakLinkClassName={
-            "px-3 py-1 border border-gray-300 rounded text-blue-500 hover:bg-gray-200"
+            "px-3 py-1 border border-gray-300 rounded text-black hover:bg-gray-200"
           }
-          activeClassName={"bg-blue-500 text-white"}
+          activeClassName={"bg-[#E62E2D] text-white"}
           activeLinkClassName={"text-white"}
         />
       </div>

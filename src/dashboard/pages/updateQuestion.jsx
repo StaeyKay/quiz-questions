@@ -1,17 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { saveQuestion } from "../../utils";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 const UpdateQuestion = () => {
   const [question, setQuestion] = useState("");
-  const [options, setOptions] = useState([]);
+  const [options, setOptions] = useState("");
   const [answer, setAnswer] = useState();
   const [category, setCategory] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
+  const questionData = location.state;
+
+  // Prefill form fields with data from location.state
+  useEffect(() => {
+    if (questionData) {
+      setQuestion(questionData.question || "");
+      setOptions(questionData.options ? questionData.options.join(", ") : "");
+      setAnswer(questionData.answer || "");
+      setCategory(questionData.category || "");
+    }
+  }, [questionData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,7 +36,7 @@ const UpdateQuestion = () => {
       };
 
       const savedQuestion = await saveQuestion(questionData);
-      toast.success("Question added successfully")
+      toast.success("Question updated successfully");
       resetForm();
     } catch (error) {
       console.log(error);
@@ -95,7 +106,7 @@ const UpdateQuestion = () => {
           <div className="p-6 flex justify-end">
             <button
               className="bg-[#E62E2D] p-3 text-white rounded-md absolute bottom-10 right-30"
-              onClick={() => navigate("/questions")}
+              onClick={() => navigate("/")}
             >
               View questions
             </button>
