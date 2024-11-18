@@ -19,7 +19,7 @@ const UpdateQuestion = () => {
     if (questionData) {
       setQuestion(questionData.question || "");
       setOptions(questionData.options ? questionData.options.join(", ") : "");
-      setAnswer(questionData.answer || "");
+      setAnswer(questionData.answer);
       setCategory(questionData.category || "");
     }
   }, [questionData]);
@@ -99,7 +99,7 @@ const UpdateQuestion = () => {
             />
             <div className="p-6">
               <button className="bg-[#E62E2D] p-3 text-white rounded-md">
-                Add question
+                Update question
               </button>
             </div>
           </form>

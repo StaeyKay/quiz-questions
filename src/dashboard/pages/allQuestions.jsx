@@ -21,9 +21,6 @@ const AllQuestions = () => {
 
   const [questions, setQuestions] = useState();
   const [input, setInput] = useState("");
-  const [question, setQuestion] = useState("");
-  const [options, setOptions] = useState([]);
-  const [answer, setAnswer] = useState();
   const [category, setCategory] = useState("");
 
   const handleSearch = async (value) => {
@@ -37,21 +34,38 @@ const AllQuestions = () => {
     navigate("updatequestions", { state: question });
   };
 
+  const handleCategorySelection = async (e) => {
+    e.preventDefault();
+  const query = category === "all" ? {} : { filter: { category } };
+  const filteredQuestions = await getQuestions(query);
+  setQuestions(filteredQuestions);
+}
+
   const onPageChange = async ({ selected }) => {
-    const questions = await getQuestions({
+    const query = {
       page: selected + 1,
-      filter: input ? { category: input } : null,
-    });
+      filter: category && category !== "all" ? { category } : null,
+    };
+    const questions = await getQuestions(query);
     setQuestions(questions);
   };
 
+  // useEffect(() => {
+  //   const fetchQuestions = async () => {
+  //     const questionRes = await getQuestions({});
+  //     setQuestions(questionRes);
+  //   };
+  //   fetchQuestions();
+  // }, []);
+
   useEffect(() => {
     const fetchQuestions = async () => {
-      const questionRes = await getQuestions({});
+      const query = category && category !== "all" ? { filter: { category } } : {};
+      const questionRes = await getQuestions(query);
       setQuestions(questionRes);
     };
     fetchQuestions();
-  }, []);
+  }, [category]);
 
   return (
     <div className="px-10 w-screen p-5">
@@ -59,30 +73,54 @@ const AllQuestions = () => {
         Questions
       </h1> */}
       <div className="flex text-white justify-around p-10">
-        <span className="bg-[#E62E2D] py-2 px-5 rounded-lg font-semibold">
+        <span className="bg-[#E62E2D] py-2 px-5 rounded-lg font-semibold text-[25px]">
           {questions?.totalDocs} Questions
         </span>
-        <span className="bg-[#E62E2D] py-2 px-5 rounded-lg font-semibold">
-          3 Categories
-        </span>
       </div>
-      <div className="flex justify-end p-5">
-        <input
-          type="text"
-          placeholder="Search..."
-          className="border border-gray-300 rounded-l-full p-2"
-          onChange={(e) => setInput(e.target.value)}
-          value={input}
-        />
-        <button
-          className="bg-[#E62E2D] p-2 text-white rounded-r-full"
-          onClick={() => handleSearch(input)}
-        >
-          Search
-        </button>
+      <div className="flex justify-between items-center py-8">
+          <form action="" className="flex h-12">
+            <select
+              onChange={(e) => setCategory(e.target.value)}
+              id="category"
+              value={category}
+              className="border border-gray-300 rounded-l-full p-2"
+              required
+            >
+              <option value="" disabled selected hidden>
+                -- Search a category --
+              </option>
+              <option value="all">All</option>
+              <option value="entertainment">Entertainment</option>
+              <option value="social studies">Social Studies</option>
+              <option value="integrated science">Integrated Science</option>
+              <option value="english language">English Language</option>
+              <option value="new">New</option>
+            </select>
+            <button
+              className="bg-[#E62E2D] p-2 text-white rounded-r-full"
+              onClick={handleCategorySelection}
+            >
+              Search
+            </button>
+          </form>
+        <div className="flex justify-end p-5">
+          <input
+            type="text"
+            placeholder="Search..."
+            className="border border-gray-300 rounded-l-full p-2"
+            onChange={(e) => setInput(e.target.value)}
+            value={input}
+          />
+          <button
+            className="bg-[#E62E2D] p-2 text-white rounded-r-full"
+            onClick={() => handleSearch(input)}
+          >
+            Search
+          </button>
+        </div>
       </div>
-      <table className="w-full text-center">
-        <thead>
+      <table className="w-full text-center shadow-2xl">
+        <thead className="bg-[#EEEEEE]">
           <tr className="border-b-2">
             <th className="p-2">
               <div className="flex gap-1 justify-center">Question</div>

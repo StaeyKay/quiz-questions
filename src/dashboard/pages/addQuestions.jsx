@@ -91,14 +91,6 @@ const AddQuestions = () => {
               </button>
             </div>
           </form>
-          <div className="p-6 flex justify-end">
-            <button
-              className="bg-[#E62E2D] p-3 text-white rounded-md absolute bottom-10 right-30"
-              onClick={() => navigate("/questions")}
-            >
-              View questions
-            </button>
-          </div>
         </div>
       </div>
     </div>
