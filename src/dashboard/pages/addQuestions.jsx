@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { saveQuestion } from "../../utils";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 const AddQuestions = () => {
   const [question, setQuestion] = useState("");
@@ -24,7 +24,7 @@ const AddQuestions = () => {
       };
 
       const savedQuestion = await saveQuestion(questionData);
-      toast.success("Question added successfully")
+      toast.success("Question added successfully");
       resetForm();
     } catch (error) {
       console.log(error);
@@ -38,7 +38,7 @@ const AddQuestions = () => {
     setAnswer("");
   };
   return (
-    <div className="h-screen overflow-hidden w-[100%]">
+    <div className="h-screen overflow-x-hidden w-full ml-64">
       <h1 className="bg-[#E62E2D] text-center p-5 text-[40px] text-white h-auto font-semibold w-[100%]">
         Questions
       </h1>

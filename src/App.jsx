@@ -21,7 +21,7 @@ const App = () => {
           element: <AddQuestions />,
         },
         {
-          path: "updatequestions",
+          path: "updatequestions/:id",
           element: <UpdateQuestion />,
         },
       ],

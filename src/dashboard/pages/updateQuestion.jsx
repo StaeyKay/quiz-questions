@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { saveQuestion } from "../../utils";
-import { useLocation, useNavigate } from "react-router-dom";
+import { saveQuestion, updateQuestion } from "../../utils";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -12,6 +12,7 @@ const UpdateQuestion = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const { id } = useParams();
   const questionData = location.state;
 
   // Prefill form fields with data from location.state
@@ -28,14 +29,18 @@ const UpdateQuestion = () => {
     e.preventDefault();
 
     try {
-      const questionData = {
+      const UpdatedQuestionData = {
         question: question,
         options: options.split(","),
         answer: answer,
         category: category,
       };
+      console.log("questionData:", questionData);
 
-      const savedQuestion = await saveQuestion(questionData);
+      const savedQuestion = await updateQuestion(
+        questionData.id,
+        UpdatedQuestionData
+      );
       toast.success("Question updated successfully");
       resetForm();
     } catch (error) {

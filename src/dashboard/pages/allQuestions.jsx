@@ -31,15 +31,16 @@ const AllQuestions = () => {
   };
 
   const handleUpdate = async (question) => {
-    navigate("updatequestions", { state: question });
+    // Pass the value of the dynamic variable
+    navigate(`updatequestions/${question.id}`, { state: question });
   };
 
   const handleCategorySelection = async (e) => {
     e.preventDefault();
-  const query = category === "all" ? {} : { filter: { category } };
-  const filteredQuestions = await getQuestions(query);
-  setQuestions(filteredQuestions);
-}
+    const query = category === "all" ? {} : { filter: { category } };
+    const filteredQuestions = await getQuestions(query);
+    setQuestions(filteredQuestions);
+  };
 
   const onPageChange = async ({ selected }) => {
     const query = {
@@ -50,17 +51,10 @@ const AllQuestions = () => {
     setQuestions(questions);
   };
 
-  // useEffect(() => {
-  //   const fetchQuestions = async () => {
-  //     const questionRes = await getQuestions({});
-  //     setQuestions(questionRes);
-  //   };
-  //   fetchQuestions();
-  // }, []);
-
   useEffect(() => {
     const fetchQuestions = async () => {
-      const query = category && category !== "all" ? { filter: { category } } : {};
+      const query =
+        category && category !== "all" ? { filter: { category } } : {};
       const questionRes = await getQuestions(query);
       setQuestions(questionRes);
     };
@@ -68,7 +62,7 @@ const AllQuestions = () => {
   }, [category]);
 
   return (
-    <div className="px-10 w-screen p-5">
+    <div className="h-screen px-12 overflow-x-hidden w-full ml-64">
       {/* <h1 className="bg-[#E62E2D] text-center p-5 text-[40px] text-white h-auto font-semibold w-[100%]">
         Questions
       </h1> */}
@@ -78,31 +72,31 @@ const AllQuestions = () => {
         </span>
       </div>
       <div className="flex justify-between items-center py-8">
-          <form action="" className="flex h-12">
-            <select
-              onChange={(e) => setCategory(e.target.value)}
-              id="category"
-              value={category}
-              className="border border-gray-300 rounded-l-full p-2"
-              required
-            >
-              <option value="" disabled selected hidden>
-                -- Search a category --
-              </option>
-              <option value="all">All</option>
-              <option value="entertainment">Entertainment</option>
-              <option value="social studies">Social Studies</option>
-              <option value="integrated science">Integrated Science</option>
-              <option value="english language">English Language</option>
-              <option value="new">New</option>
-            </select>
-            <button
-              className="bg-[#E62E2D] p-2 text-white rounded-r-full"
-              onClick={handleCategorySelection}
-            >
-              Search
-            </button>
-          </form>
+        <form action="" className="flex h-12">
+          <select
+            onChange={(e) => setCategory(e.target.value)}
+            id="category"
+            value={category}
+            className="border border-gray-300 rounded-l-full p-2"
+            required
+          >
+            <option value="" disabled selected hidden>
+              -- Search a category --
+            </option>
+            <option value="all">All</option>
+            <option value="entertainment">Entertainment</option>
+            <option value="social studies">Social Studies</option>
+            <option value="integrated science">Integrated Science</option>
+            <option value="english language">English Language</option>
+            <option value="new">New</option>
+          </select>
+          <button
+            className="bg-[#E62E2D] p-2 text-white rounded-r-full"
+            onClick={handleCategorySelection}
+          >
+            Search
+          </button>
+        </form>
         <div className="flex justify-end p-5">
           <input
             type="text"
@@ -140,9 +134,9 @@ const AllQuestions = () => {
           </tr>
         </thead>
         <tbody>
-          {questions?.docs?.map((question, index) => {
+          {questions?.docs?.map((question) => {
             return (
-              <tr key={index} className="even:bg-[#eeeeee]">
+              <tr key={question.id} className="even:bg-[#eeeeee]">
                 <td className="p-2">{question.question}</td>
                 <td className="p-2">
                   <ul>
