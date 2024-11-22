@@ -7,7 +7,8 @@ import "react-toastify/dist/ReactToastify.css";
 const AddQuestions = () => {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState([]);
-  const [answer, setAnswer] = useState();
+  const [rawOptions, setRawOptions] = useState(""); // New state for raw input
+  const [answer, setAnswer] = useState("");
   const [category, setCategory] = useState("");
 
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const AddQuestions = () => {
     try {
       const questionData = {
         question: question,
-        options: options.split(","),
+        options: options,
         answer: answer,
         category: category,
       };
@@ -33,10 +34,27 @@ const AddQuestions = () => {
 
   const resetForm = () => {
     setQuestion("");
-    setOptions("");
+    setOptions([]);
+    setRawOptions("");
     setCategory("");
     setAnswer("");
   };
+
+  const handleOptionsChange = (e) => {
+    const input = e.target.value;
+    setRawOptions(input); // Update raw input value
+    const optionsArray = input
+      .split(",") // Split by commas
+      .map((opt) => opt.trim()) // Remove leading/trailing spaces
+      .filter((opt) => opt !== ""); // Remove empty strings
+    setOptions(optionsArray);
+
+    // Reset the answer if it's no longer valid
+    if (!optionsArray.includes(answer)) {
+      setAnswer("");
+    }
+  };
+
   return (
     <div className="h-screen overflow-x-hidden w-full ml-64">
       <h1 className="bg-[#E62E2D] text-center p-5 text-[40px] text-white h-auto font-semibold w-[100%]">
@@ -58,33 +76,44 @@ const AddQuestions = () => {
               value={question}
               required
             />
+
             <label htmlFor="">Enter the options separated by commas:</label>
             <input
               type="text"
               placeholder="options"
               className="border border-gray-300 rounded-md p-2 focus:border-gray-500 focus:outline-none w-2/3"
-              onChange={(e) => setOptions(e.target.value)}
-              value={options}
+              onChange={handleOptionsChange}
+              value={rawOptions} // Use raw input for display
               required
             />
-            <label htmlFor="">Correct answer</label>
-            <input
-              type="number"
-              placeholder="Input the index of the correct answer here"
+
+            <label htmlFor="">Correct answer:</label>
+            <select
               className="border border-gray-300 rounded-md p-2 focus:border-gray-500 focus:outline-none w-2/3"
               onChange={(e) => setAnswer(e.target.value)}
               value={answer}
               required
-            />
-            <label htmlFor="">Category</label>
+            >
+              <option value="" disabled>
+                Select the correct answer
+              </option>
+              {options.map((option, index) => (
+                <option key={index} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+
+            <label htmlFor="">Category:</label>
             <input
               type="text"
-              placeholder="Input the index of the correct answer here"
+              placeholder="Enter the category here"
               className="border border-gray-300 rounded-md p-2 focus:border-gray-500 focus:outline-none w-2/3"
               onChange={(e) => setCategory(e.target.value)}
               value={category}
               required
             />
+
             <div className="p-6">
               <button className="bg-[#E62E2D] p-3 text-white rounded-md">
                 Add question
