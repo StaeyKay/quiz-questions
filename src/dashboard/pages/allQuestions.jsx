@@ -10,7 +10,24 @@ import {
 } from "../../utils";
 import { FaRegEdit } from "react-icons/fa";
 import { MdOutlineDelete } from "react-icons/md";
+import { LuEye } from "react-icons/lu";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
 import { useNavigate, useParams } from "react-router-dom";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
 const AllQuestions = () => {
   const urlParams = useParams();
@@ -22,6 +39,9 @@ const AllQuestions = () => {
   const [questions, setQuestions] = useState();
   const [input, setInput] = useState("");
   const [category, setCategory] = useState("");
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const handleSearch = async (value) => {
     const filteredQuestions = await getQuestions({
@@ -148,15 +168,20 @@ const AllQuestions = () => {
                 <td className="p-2">{question.answer}</td>
                 <td className="p-2">{question.category}</td>
                 <td className="p-2">
-                  <div className="flex justify-center">
+                  <div className="flex justify-center items-center gap-3">
+                    <LuEye
+                      onClick={handleOpen}
+                      className="hover: cursor-pointer"
+                      size={25}
+                    />
                     <FaRegEdit
                       onClick={() => handleUpdate(question)}
                       className="hover: cursor-pointer"
-                      size={20}
+                      size={25}
                     />
                     <MdOutlineDelete
                       className="hover: cursor-pointer"
-                      size={22}
+                      size={27}
                       onClick={async (e) => {
                         try {
                           await deleteQuestion(question.id);
@@ -176,6 +201,23 @@ const AllQuestions = () => {
           })}
         </tbody>
       </table>
+      <div>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Text in a modal
+            </Typography>
+            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+              Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+            </Typography>
+          </Box>
+        </Modal>
+      </div>
       <div>
         <ReactPaginate
           previousLabel={"Previous"}
