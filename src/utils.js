@@ -15,11 +15,6 @@ export async function saveQuestion(question) {
 
 // Utility function to get all questions
 export async function getQuestions({ limit, page, filter, fields }) {
-  // const {limit, filter, page, fields} = params
-  // const filter = params.filter
-  // const page = params.page
-  // const fields = params.fields
-
   const questionResponse = await fetch(
     `${BASE_URL}/questions?${new URLSearchParams({
       limit: limit ?? 10,
@@ -27,19 +22,6 @@ export async function getQuestions({ limit, page, filter, fields }) {
       filter: JSON.stringify(filter ?? {}),
       fields: JSON.stringify(fields ?? {}),
     })}`,
-    {
-      method: "GET",
-    }
-  );
-
-  const response = await questionResponse.json();
-  return response;
-}
-
-// Utility function to filter questions
-export async function filterQuestions(filter) {
-  const questionResponse = await fetch(
-    `${BASE_URL}/questions?filter=${JSON.stringify({ category: filter })}`,
     {
       method: "GET",
     }

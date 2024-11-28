@@ -2,12 +2,7 @@ import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {
-  deleteQuestion,
-  filterQuestions,
-  getQuestions,
-  updateQuestion,
-} from "../../utils";
+import { deleteQuestion, getQuestions, updateQuestion } from "../../utils";
 import { FaRegEdit } from "react-icons/fa";
 import { MdOutlineDelete } from "react-icons/md";
 import { LuEye } from "react-icons/lu";
@@ -22,9 +17,9 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
+  width: 800,
   bgcolor: "background.paper",
-  border: "2px solid #000",
+  // border: "2px solid #000",
   boxShadow: 24,
   p: 4,
 };
@@ -38,14 +33,18 @@ const AllQuestions = () => {
 
   const [questions, setQuestions] = useState();
   const [input, setInput] = useState("");
-  const [category, setCategory] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentQuestion, setCurrentQuestion] = useState({});
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
+  const handleOpen = (question) => {
+    setCurrentQuestion(question);
+    setOpen(true);
+  };
   const handleClose = () => setOpen(false);
 
   const handleSearch = async (value) => {
     const filteredQuestions = await getQuestions({
-      filter: { category: value },
+      filter: { category: value, question: value },
     });
     setQuestions(filteredQuestions);
   };
@@ -65,7 +64,10 @@ const AllQuestions = () => {
   const onPageChange = async ({ selected }) => {
     const query = {
       page: selected + 1,
-      filter: category && category !== "all" ? { category } : null,
+      filter:
+        searchQuery && searchQuery !== "all"
+          ? { category: searchQuery, question: searchQuery }
+          : null,
     };
     const questions = await getQuestions(query);
     setQuestions(questions);
@@ -74,12 +76,14 @@ const AllQuestions = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       const query =
-        category && category !== "all" ? { filter: { category } } : {};
+        searchQuery && searchQuery !== "all"
+          ? { filter: { category: searchQuery, question: searchQuery } }
+          : {};
       const questionRes = await getQuestions(query);
       setQuestions(questionRes);
     };
     fetchQuestions();
-  }, [category]);
+  }, [searchQuery]);
 
   return (
     <div className="h-screen px-12 overflow-x-hidden w-full ml-64">
@@ -94,9 +98,9 @@ const AllQuestions = () => {
       <div className="flex justify-between items-center py-8">
         <form action="" className="flex h-12">
           <select
-            onChange={(e) => setCategory(e.target.value)}
-            id="category"
-            value={category}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            id="searchQuery"
+            value={searchQuery}
             className="border border-gray-300 rounded-l-full p-2"
             required
           >
@@ -140,16 +144,13 @@ const AllQuestions = () => {
               <div className="flex gap-1 justify-center">Question</div>
             </th>
             <th className="text-center p-2">
-              <div className="flex gap-1 justify-center">Options</div>
-            </th>
-            <th className="text-center p-2">
               <div className="flex gap-1 justify-center">Answer</div>
             </th>
             <th className="text-center p-2">
-              <div className="flex gap-1">Category</div>
+              <div className="flex gap-1 justify-center">Category</div>
             </th>
             <th className="text-center p-2">
-              <div className="flex gap-1">Edit/Delete</div>
+              <div className="flex gap-1 justify-center">Edit/Delete</div>
             </th>
           </tr>
         </thead>
@@ -158,19 +159,12 @@ const AllQuestions = () => {
             return (
               <tr key={question.id} className="even:bg-[#eeeeee]">
                 <td className="p-2">{question.question}</td>
-                <td className="p-2">
-                  <ul>
-                    {question.options.map((option, idx) => (
-                      <li key={idx}>{option}</li>
-                    ))}
-                  </ul>
-                </td>
                 <td className="p-2">{question.answer}</td>
                 <td className="p-2">{question.category}</td>
                 <td className="p-2">
                   <div className="flex justify-center items-center gap-3">
                     <LuEye
-                      onClick={handleOpen}
+                      onClick={() => handleOpen(question)}
                       className="hover: cursor-pointer"
                       size={25}
                     />
@@ -209,12 +203,36 @@ const AllQuestions = () => {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Text in a modal
-            </Typography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-              Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-            </Typography>
+            <table className="w-full">
+              <thead className="bg-[#EEEEEE] font-semibold">
+                <tr>
+                  <td className="p-2 justify-center">Question</td>
+                  <td className="p-2 justify-center">Options</td>
+                  <td className="p-2 justify-center">Answer</td>
+                  <td className="p-2 justify-center">Category</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="p-2 justify-center">
+                    {currentQuestion.question}
+                  </td>
+                  <td className="p-2 justify-center">
+                    <ul>
+                      {currentQuestion.options?.map((option, idx) => (
+                        <li key={idx}>{option}</li>
+                      ))}
+                    </ul>
+                  </td>
+                  <td className="p-2 justify-center">
+                    {currentQuestion.answer}
+                  </td>
+                  <td className="p-2 justify-center">
+                    {currentQuestion.category}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </Box>
         </Modal>
       </div>
